@@ -19,8 +19,9 @@ try {
     $month_expense = $exp_stmt->fetch()['total'];
 
     // 3. Fetch Latest Financial Health Score
-    $score_stmt = $pdo->prepare("SELECT total_score, rating FROM Financial_Score_History WHERE user_id = :uid ORDER BY year DESC, month DESC LIMIT 1");
-    $score_stmt->execute(['uid' => $user_id]);
+    // 3. Fetch This Month's Financial Health Score
+    $score_stmt = $pdo->prepare("SELECT total_score, rating FROM Financial_Score_History WHERE user_id = :uid AND month = :m AND year = :y");
+    $score_stmt->execute(['uid' => $user_id, 'm' => $current_month, 'y' => $current_year]);
     $latest_score = $score_stmt->fetch();
 
     // 4. Fetch 5 most recent transactions (combining Income & Expense via UNION)
@@ -35,7 +36,6 @@ try {
     $recent_stmt = $pdo->prepare($recent_sql);
     $recent_stmt->execute(['u1' => $user_id, 'u2' => $user_id]);
     $recent_trans = $recent_stmt->fetchAll();
-
 } catch (PDOException $e) {
     $error = "Database Error: " . $e->getMessage();
 }
@@ -105,7 +105,9 @@ $balance = $month_income - $month_expense;
 <div class="row g-4">
     <div class="col-lg-4">
         <div class="card shadow-sm border-0 rounded-3 h-100">
-            <div class="card-header bg-white py-3 border-bottom"><h5 class="mb-0 fw-bold">⚡ Quick Navigation</h5></div>
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="mb-0 fw-bold">⚡ Quick Navigation</h5>
+            </div>
             <div class="card-body p-3 d-grid gap-2">
                 <a href="/uniwallet/modules/budget/index.php" class="btn btn-light text-start border py-2">🎯 Check Monthly Budgets</a>
                 <a href="/uniwallet/modules/savings/index.php" class="btn btn-light text-start border py-2">🌱 Manage Savings Targets</a>
@@ -118,14 +120,25 @@ $balance = $month_income - $month_expense;
 
     <div class="col-lg-8">
         <div class="card shadow-sm border-0 rounded-3 h-100">
-            <div class="card-header bg-white py-3 border-bottom"><h5 class="mb-0 fw-bold">📋 Recent Financial Activity</h5></div>
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="mb-0 fw-bold">📋 Recent Financial Activity</h5>
+            </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light"><tr><th class="ps-4">Date</th><th>Type</th><th>Category / Note</th><th class="text-end pe-4">Amount</th></tr></thead>
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Date</th>
+                                <th>Type</th>
+                                <th>Category / Note</th>
+                                <th class="text-end pe-4">Amount</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <?php if (empty($recent_trans)): ?>
-                                <tr><td colspan="4" class="text-center py-4 text-muted">No transactions recorded yet. Start tracking above!</td></tr>
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-muted">No transactions recorded yet. Start tracking above!</td>
+                                </tr>
                             <?php else: ?>
                                 <?php foreach ($recent_trans as $t): ?>
                                     <?php $is_inc = $t['type'] === 'Income'; ?>

@@ -181,7 +181,7 @@ try {
                     
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Person's Name <span class="text-danger">*</span></label>
-                        <input type="text" name="person_name" class="form-control" placeholder="e.g., Fahim, Lia Moni" required>
+                        <input type="text" name="person_name" class="form-control" placeholder="e.g., Rakib" required>
                     </div>
 
                     <div class="row mb-3">

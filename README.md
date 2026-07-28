@@ -6,13 +6,12 @@ Follow these steps to run **UniWallet** locally on your machine using XAMPP, WAM
 * Install [XAMPP](https://www.apachefriends.org/index.html) (or any local web server supporting PHP 8+ and MySQL).
 * Ensure **Apache** and **MySQL** modules are running in your XAMPP Control Panel.
 
-
 ### 2. Clone the Repository
 Open your terminal/command prompt, navigate to your web server's root directory (`C:\xampp\htdocs\`), and clone the repository:
 ```bash
 cd C:\xampp\htdocs\
-git clone [https://github.com/yourusername/uniwallet.git](https://github.com/yourusername/uniwallet.git)
-
+git clone https://github.com/yourusername/uniwallet.git
+```
 
 ### 3. Database Setup in phpMyAdmin
 1. Open your web browser and navigate to: `http://localhost/phpmyadmin/`
